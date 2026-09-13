@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Profit Plan</title>
+    <link rel="stylesheet" href="style.css">
+
+    <meta name="theme-color" content="#DDBF35">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body onload="startApp()">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.log('SW error:', err));
+  }
+</script>
+
+<!-- SPLASH -->
+<div id="splash">
+    <img src="Trading_logo.png" alt="Trading Logo">
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp" style="display:none;">
+
+<h2>Trading Profit Plan</h2>
+
+<div class="container">
+
+    <h2>Υπολογισμός Πονταρισμάτων</h2>
+
+<label for="startAmount">Αρχικό Ποσό ($):</label>
+<input type="number" id="startAmount" readonly>
+
+<label for="profitRate">Ποσοστό Κέρδους (%):</label>
+<input type="number" id="profitRate" value="88" required min="0" max="100" step="0.01">
+
+<label for="startDate">Ημερομηνία Έναρξης:</label>
+<input type="date" id="startDate" value="2026-09-05" required min="2020-01-01" max="2030-12-31">
+
+<label for="inDeposit">Αρχική Κατάθεση ($):</label>
+<input type="number" id="inDeposit" value="300" required>
+
+<label for="exDeposit">Επιπλέων Κατάθεση ($):</label>
+<input type="number" id="exDeposit" value="300" required>
+
+<label for="bonus">Bonus ($):</label>
+<input type="number" id="bonus" value="0" required>
+
+<label for="bonusSignal">Bonus Σήμα:</label>
+<input type="number" id="bonusSignal" value="0" required>
+
+<label for="targetProfit">Στόχος Κέρδους σε 30 μέρες (€):</label>
+<input type="number" id="targetProfit" placeholder="100">
+
+<label for="wAmount">Ποσό για Ανάληψη ($):</label>
+<input type="number" id="wAmount" readonly>
+
+<label for="rateUSDC">Ισοτιμία USDC → EUR (Revolut):</label>
+<input type="number" id="rateUSDC" step="0.0001" value="0.85">    
+
+<label for="calcUntil">Υπολογισμός μέχρι ημερομηνία:</label>
+<input type="date" id="calcUntil">
+
+<button onclick="calculateProfitUntil()">Υπολογισμός Κέρδους</button>
+<div id="futureResult"></div>
+
+<h4>Παίξιμο ανά ημέρα:</h4>
+<div id="days">
+  Δευτέρα:
+  <select id="day1">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  Τρίτη:
+  <select id="day2">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  Τετάρτη:
+  <select id="day3">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  Πέμπτη:
+  <select id="day4">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  Παρασκευή:
+  <select id="day5">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  Σάββατο:
+  <select id="day6">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  Κυριακή:
+  <select id="day7">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+</div>
+
+<button onclick="generateTable()">Υπολογισμός</button>
+
+<br><br>
+
+<!-- ΚΟΥΜΠΙ ΓΙΑ ΤΗ ΝΕΑ ΦΟΡΜΑ -->
+<button onclick="openForm2()">Μακροχρόνιο Πλάνο</button>
+
+</div>
+
+<div id="results"></div>
+
+<footer>© Trading PROFIT PLAN — Δημήτρης 2026</footer>
+
+</div> <!-- ΤΕΛΟΣ mainApp -->
+
+<!-- FORM 2 - outside mainApp so it's not affected when mainApp is hidden -->
+<div id="form2" style="display:none; padding: 10px; box-sizing: border-box; width: 100%;">
+    <h2>Μακροχρόνιο Πλάνο</h2>
+
+<style>
+  #form2 table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+  }
+  #form2 th, #form2 td {
+    border: 1px solid #ccc;
+    padding: 4px 3px;
+    text-align: center;
+    overflow: hidden;
+    word-break: break-word;
+  }
+  #form2 th {
+    background: #f0f0f0;
+    font-size: 11px;
+  }
+  /* Column widths for profitTable (12 columns matching 12 data cells per row) */
+  #profitTable col.col-num    { width: 4%;  }
+  #profitTable col.col-plays  { width: 7%;  }
+  #profitTable col.col-date   { width: 9%;  }
+  #profitTable col.col-amount { width: 9%;  }
+  #profitTable col.col-fee    { width: 7%;  }
+  #profitTable col.col-w      { width: 9%;  }
+  #profitTable col.col-net    { width: 8%;  }
+  #profitTable col.col-days   { width: 6%;  }
+
+  #profitTable input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 11px;
+    padding: 2px;
+  }
+  #profitTable input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 10px;
+    padding: 2px;
+  }
+  /* Scrollable wrapper for the table */
+  .table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>
+
+<table>
+    <tr>
+        <th>Ποσοστό Κέρδους (%)</th>
+        <td><span id="profitRate_display"></span></td>
+        <th>Ισοτιμία USDC → EUR</th>
+        <td><span id="rateUSDC_display"></span></td>
+    </tr>
+</table>
+
+<div class="table-scroll">
+<table id="profitTable">
+    <colgroup>
+        <col class="col-num">    <!-- # -->
+        <col class="col-plays">  <!-- Παίξ/μέρα -->
+        <col class="col-date">   <!-- Αρχή -->
+        <col class="col-date">   <!-- Τέλος -->
+        <col class="col-amount"> <!-- Αρχικό -->
+        <col class="col-amount"> <!-- Τελικό -->
+        <col class="col-w">      <!-- Ανάληψη -->
+        <col class="col-fee">    <!-- Fee 5% -->
+        <col class="col-w">      <!-- Μετά Fee -->
+        <col class="col-net">    <!-- Καθαρό€ -->
+        <col class="col-amount"> <!-- Υπόλοιπο -->
+        <col class="col-days">   <!-- Μέρες -->
+    </colgroup>
+    <tr>
+        <th>#</th>
+        <th>Παίξ/μέρα</th>
+        <th>Αρχή</th>
+        <th>Τέλος</th>
+        <th>Αρχικό</th>
+        <th>Τελικό</th>
+        <th>Ανάληψη</th>
+        <th>Fee 5%</th>
+        <th>Μετά Fee</th>
+        <th>Καθαρό€</th>
+        <th>Υπόλοιπο</th>
+        <th>Μέρες</th>
+    </tr>
+
+    <!-- ROW 1 -->
+    <tr>
+        <td>1</td>
+        <td><input id="p1" type="number" value="2" min="1"></td>
+        <td><input id="a1" type="date"></td>
+        <td><input id="b1" type="date"></td>
+        <td><input id="c1" type="number" step="0.01"></td>
+        <td id="d1"></td>
+        <td><input id="w1" type="number" step="0.01"></td>
+        <td id="fee1"></td>
+        <td id="wf1"></td>
+        <td id="net1"></td>
+        <td id="r1"></td>
+        <td id="days1"></td>
+    </tr>
+
+    <!-- ROWS 2–10 (auto-generated) -->
+    <tbody id="rows"></tbody>
+</table>
+</div>
+
+<br>
+<button onclick="run10()" style="width:100%; padding: 12px; margin-bottom: 8px;">Υπολογισμός</button>
+<button onclick="backToMain()" style="width:100%; padding: 12px;">Πίσω</button>
+
+</div> <!-- ΤΕΛΟΣ form2 -->
+
+<script src="script.js"></script>
+    <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    reg.onupdatefound = () => {
+      const newWorker = reg.installing;
+      newWorker.onstatechange = () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          console.log("Νέα έκδοση – auto refresh");
+          window.location.reload();
+        }
+      };
+    };
+  });
+}
+</script>
+</body>
+</html>
