@@ -24,7 +24,7 @@
 
 <!-- SPLASH -->
 <div id="splash">
-    <img src="τrading_logo.png" alt="Trading Logo">
+    <img src="trading_logo.png" alt="Trading Logo">
 </div>
 
 <!-- MAIN APP -->
@@ -43,7 +43,7 @@
 <input type="number" id="profitRate" value="88" required min="0" max="100" step="0.01">
 
 <label for="startDate">Ημερομηνία Έναρξης:</label>
-<input type="date" id="startDate" value="2026-09-12" required min="2020-01-01" max="2030-12-31">
+<input type="date" id="startDate" value="2026-09-05" required min="2020-01-01" max="2030-12-31">
 
 <label for="inDeposit">Αρχική Κατάθεση ($):</label>
 <input type="number" id="inDeposit" value="300" required>
@@ -63,8 +63,8 @@
 <label for="wAfterFee">Ποσό για Ανάληψη μετά την Κράτηση ($):</label>
 <input type="number" id="wAfterFee" readonly>
 
-<label for="rateUSDC">Ισοτιμία USDC → EUR:</label>
-<input type="number" id="rateUSDC" step="0.0001" value="0.86">
+<label for="rateUSDC">Ισοτιμία USDC → EUR (Revolut):</label>
+<input type="number" id="rateUSDC" step="0.0001" value="0.85">
 
 <label for="wAmountEUR">Ανάληψη σε Ευρώ (€):</label>
 <input type="number" id="wAmountEUR" readonly>
@@ -220,9 +220,9 @@
         <col class="col-date">   <!-- Τέλος -->
         <col class="col-amount"> <!-- Αρχικό -->
         <col class="col-amount"> <!-- Τελικό -->
-        <col class="col-w">      <!-- Προς Ανάληψη -->
-        <col class="col-fee">    <!-- Κράτηση 5% -->
-        <col class="col-w">      <!-- Αναλήψη -->
+        <col class="col-w">      <!-- Ανάληψη -->
+        <col class="col-fee">    <!-- Fee 5% -->
+        <col class="col-w">      <!-- Μετά Fee -->
         <col class="col-net">    <!-- Καθαρό€ -->
         <col class="col-amount"> <!-- Υπόλοιπο -->
         <col class="col-days">   <!-- Μέρες -->
@@ -232,13 +232,13 @@
         <th>Παίξ/μέρα</th>
         <th>Αρχή</th>
         <th>Τέλος</th>
-        <th>Αρχικό$</th>
-        <th>Τελικό$</th>
-        <th>Προς Ανάληψη$</th>
-        <th>Κράτηση 5%</th>
-        <th>Αναλήψη$</th>
+        <th>Αρχικό</th>
+        <th>Τελικό</th>
+        <th>Ανάληψη</th>
+        <th>Fee 5%</th>
+        <th>Μετά Fee</th>
         <th>Καθαρό€</th>
-        <th>Υπόλοιπο$</th>
+        <th>Υπόλοιπο</th>
         <th>Μέρες</th>
     </tr>
 
