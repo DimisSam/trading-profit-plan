@@ -20,11 +20,15 @@ function startApp() {
         loadSavedValues();
         autoLoad();   // ← ΜΕΤΑΦΕΡΘΗΚΕ ΕΔΩ
         updateStartAmount();
-        updateWAmount();
+        updateWithdrawal();
 
         document.getElementById("inDeposit").addEventListener("input", debounce(updateStartAmount, 250));
         document.getElementById("bonus").addEventListener("input", debounce(updateStartAmount, 250));
         document.getElementById("exDeposit").addEventListener("input", debounce(updateStartAmount, 250));
+
+        document.getElementById("wAmount").addEventListener("input", debounce(updateWithdrawal, 250));
+        document.getElementById("kratiseis").addEventListener("input", debounce(updateWithdrawal, 250));
+        document.getElementById("rateUSDC").addEventListener("input", debounce(updateWithdrawal, 250));
 
         document.querySelectorAll("input").forEach(el => el.addEventListener("input", saveValues));
         for (let i = 1; i <= 7; i++) {
@@ -37,7 +41,7 @@ function startApp() {
 // HELPERS (Load, Save)
 // -------------------------
 function loadSavedValues() {
-    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "bonusSignal", "rateUSDC", "targetProfit", "wAmount"];
+    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "rateUSDC", "wAmount", "kratiseis"];
     fields.forEach(id => {
         const saved = localStorage.getItem(id);
         if (saved !== null && document.getElementById(id)) document.getElementById(id).value = saved;
@@ -49,7 +53,7 @@ function loadSavedValues() {
 }
 
 function saveValues() {
-    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "bonusSignal", "rateUSDC", "targetProfit", "wAmount"];
+    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "rateUSDC", "wAmount", "kratiseis"];
     fields.forEach(id => {
         const el = document.getElementById(id);
         if (el) localStorage.setItem(id, el.value);
@@ -70,18 +74,20 @@ function updateStartAmount() {
     saveValues();
 }
 
-function updateWAmount() {
-    const target = parseFloat(document.getElementById("targetProfit").value) || 0;
+function updateWithdrawal() {
+    const wAmount = parseFloat(document.getElementById("wAmount").value) || 0;
+    const kratiseisPct = parseFloat(document.getElementById("kratiseis").value) || 0;
     const rate = parseFloat(document.getElementById("rateUSDC").value) || 0;
-    if (rate > 0) {
-        document.getElementById("wAmount").value = (target / (0.88 * rate)).toFixed(2);
-    }
+
+    const wAfterFee = wAmount - (wAmount * kratiseisPct / 100);
+    document.getElementById("wAfterFee").value = wAfterFee.toFixed(2);
+
+    document.getElementById("wAmountEUR").value = (wAfterFee * rate).toFixed(2);
+
     saveValues();
 }
 
 function generateTable() {
-    updateWAmount();
-
     const αρχική = parseFloat(document.getElementById("inDeposit").value) || 0;
     const επιπλέον = parseFloat(document.getElementById("exDeposit").value) || 0;
     const μπόνους = parseFloat(document.getElementById("bonus").value) || 0;
@@ -101,25 +107,6 @@ function generateTable() {
                 <th>Νέο Ποσό</th>
             </tr>
     `;
-
-    const bonusSignal = parseInt(document.getElementById("bonusSignal").value) || 0;
-
-    for (let b = 1; b <= bonusSignal; b++) {
-        const ποντάρισμα = τρέχονΠοσό * 0.01;
-        const κέρδος = ποντάρισμα * rate;
-
-        τρέχονΠοσό += κέρδος;
-
-        html += `
-            <tr>
-                <td>${ημερομηνία.toLocaleDateString("el-GR")}</td>
-                <td>Bonus ${b}</td>
-                <td>$${ποντάρισμα.toFixed(2)}</td>
-                <td>$${κέρδος.toFixed(2)}</td>
-                <td>$${τρέχονΠοσό.toFixed(2)}</td>
-            </tr>
-        `;
-    }
 
     const targetLimit = (αρχική + επιπλέον + μπόνους) * 2;
 
@@ -180,41 +167,6 @@ html += `
 `;
 
 document.getElementById("results").innerHTML = html;
-}
-
-// -------------------------
-// ΠΙΘΑΝΟ ΚΕΡΔΟΣ ΜΕΧΡΙ ΗΜΕΡΟΜΗΝΙΑ
-// -------------------------
-function calculateProfitUntil() {
-
-    const startAmount = parseFloat(document.getElementById("startAmount").value) || 0;
-    const rate = (parseFloat(document.getElementById("profitRate").value) || 0) / 100;
-    const startDate = new Date(document.getElementById("startDate").value);
-    const untilDate = new Date(document.getElementById("calcUntil").value);
-
-    if (!document.getElementById("calcUntil").value) {
-        document.getElementById("futureResult").innerHTML = "⚠️ Δώσε ημερομηνία.";
-        return;
-    }
-
-    let amount = startAmount;
-    let date = new Date(startDate);
-
-    while (date <= untilDate) {
-
-        for (let i = 0; i < 2; i++) {
-            const bet = amount * 0.01;
-            const profit = bet * rate;
-            amount += profit;
-        }
-
-        date.setDate(date.getDate() + 1);
-    }
-
-    const profit = amount - startAmount;
-
-    document.getElementById("futureResult").innerHTML =
-        `Πιθανό κέρδος: $${profit.toFixed(2)}<br>Νέο ποσό: $${amount.toFixed(2)}`;
 }
 
 // -------------------------
