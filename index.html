@@ -57,14 +57,14 @@
 <label for="wAmount">Ποσό για Ανάληψη ($):</label>
 <input type="number" id="wAmount" step="0.01">
 
-<label for="feeRate">Κρατήσεις (%):</label>
+<label for="kratiseis">Κρατήσεις (%):</label>
 <input type="number" id="kratiseis" step="0.01" value="5">
 
 <label for="wAfterFee">Ποσό για Ανάληψη μετά την Κράτηση ($):</label>
 <input type="number" id="wAfterFee" readonly>
 
-<label for="rateUSDT">Ισοτιμία USDT → EUR (Revolut):</label>
-<input type="number" id="rateUSDT" step="0.0001" value="0.85">
+<label for="rateUSDC">Ισοτιμία USDC → EUR (Revolut):</label>
+<input type="number" id="rateUSDC" step="0.0001" value="0.85">
 
 <label for="wAmountEUR">Ανάληψη σε Ευρώ (€):</label>
 <input type="number" id="wAmountEUR" readonly>
@@ -206,10 +206,12 @@
     <tr>
         <th>Ποσοστό Κέρδους (%)</th>
         <td><span id="profitRate_display"></span></td>
-        <th>Ποσοστό Κράτησης (%)</th>
-        <td><span id="feeRate_display"></span></td>
-        <th>Ισοτιμία USDT → EUR</th>
-        <td><span id="rateUSDT_display"></span></td>
+        <th>Ισοτιμία USDC → EUR</th>
+        <td><span id="rateUSDC_display"></span></td>
+    </tr>
+    <tr>
+        <th>Κρατήσεις (%)</th>
+        <td><span id="kratiseis_display"></span></td>
     </tr>
 </table>
 
@@ -222,9 +224,9 @@
         <col class="col-date">   <!-- Τέλος -->
         <col class="col-amount"> <!-- Αρχικό -->
         <col class="col-amount"> <!-- Τελικό -->
-        <col class="col-w">      <!-- Προς Ανάληψη -->
-        <col class="col-fee">    <!-- Κράτηση 5% -->
         <col class="col-w">      <!-- Ανάληψη -->
+        <col class="col-fee">    <!-- Fee 5% -->
+        <col class="col-w">      <!-- Μετά Fee -->
         <col class="col-net">    <!-- Καθαρό€ -->
         <col class="col-amount"> <!-- Υπόλοιπο -->
         <col class="col-days">   <!-- Μέρες -->
@@ -237,8 +239,8 @@
         <th>Αρχικό</th>
         <th>Τελικό</th>
         <th>Ανάληψη</th>
-        <th>Fee 5%</th>
-        <th>Μετά Fee</th>
+        <th>Κράτηση %</th>
+        <th>Μετά Κράτηση</th>
         <th>Καθαρό€</th>
         <th>Υπόλοιπο</th>
         <th>Μέρες</th>
