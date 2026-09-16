@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trading-profit-plan-v1';
+const CACHE_NAME = 'trading-profit-plan-v2'; // ← bump αυτό σε v3, v4 κάθε φορά που αλλάζεις κώδικα
 
 const ASSETS = [
   './',
@@ -34,16 +34,33 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: serve from cache, fallback to network
+// Fetch: Network-first για JS/CSS/HTML, cache fallback για offline
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request).catch(() => {
-        // If both cache and network fail, return a simple offline page
-        if (event.request.destination === 'document') {
-          return caches.match('./index.html');
-        }
-      });
-    })
-  );
+  const url = new URL(event.request.url);
+  const isAsset = ['.js', '.css', '.html'].some(ext => url.pathname.endsWith(ext))
+               || url.pathname.endsWith('/');
+
+  if (isAsset) {
+    // Network-first: παίρνει πάντα το νέο αρχείο, fallback στο cache αν offline
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+  } else {
+    // Cache-first για εικόνες/icons (δεν αλλάζουν συχνά)
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        return cached || fetch(event.request).catch(() => {
+          if (event.request.destination === 'document') {
+            return caches.match('./index.html');
+          }
+        });
+      })
+    );
+  }
 });
