@@ -27,7 +27,7 @@ function startApp() {
         document.getElementById("exDeposit").addEventListener("input", debounce(updateStartAmount, 250));
 
         document.getElementById("wAmount").addEventListener("input", debounce(updateWithdrawal, 250));
-        document.getElementById("kratiseis").addEventListener("input", debounce(updateWithdrawal, 250)); // FIX: kratiseis not feeRate
+        document.getElementById("fee").addEventListener("input", debounce(updateWithdrawal, 250)); 
         document.getElementById("rateUSDT").addEventListener("input", debounce(updateWithdrawal, 250));
 
         document.querySelectorAll("input").forEach(el => el.addEventListener("input", saveValues));
@@ -41,7 +41,7 @@ function startApp() {
 // HELPERS (Load, Save)
 // -------------------------
 function loadSavedValues() {
-    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "rateUSDT", "wAmount", "kratiseis"]; // FIX: kratiseis
+    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "rateUSDT", "wAmount", "fee"]; 
     fields.forEach(id => {
         const saved = localStorage.getItem(id);
         if (saved !== null && document.getElementById(id)) document.getElementById(id).value = saved;
@@ -53,7 +53,7 @@ function loadSavedValues() {
 }
 
 function saveValues() {
-    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "rateUSDT", "wAmount", "kratiseis"]; // FIX: kratiseis
+    const fields = ["profitRate", "startDate", "inDeposit", "exDeposit", "bonus", "rateUSDT", "wAmount", "fee"]; 
     fields.forEach(id => {
         const el = document.getElementById(id);
         if (el) localStorage.setItem(id, el.value);
@@ -76,10 +76,10 @@ function updateStartAmount() {
 
 function updateWithdrawal() {
     const wAmount = parseFloat(document.getElementById("wAmount").value) || 0;
-    const kratiseisPct = parseFloat(document.getElementById("kratiseis").value) || 0; // FIX: kratiseis
+    const feePct = parseFloat(document.getElementById("fee").value) || 0; 
     const rate = parseFloat(document.getElementById("rateUSDT").value) || 0;
 
-    const wAfterFee = wAmount - (wAmount * kratiseisPct / 100);
+    const wAfterFee = wAmount - (wAmount * feePct / 100);
     document.getElementById("wAfterFee").value = wAfterFee.toFixed(2);
     document.getElementById("wAmountEUR").value = (wAfterFee * rate).toFixed(2);
 
@@ -190,11 +190,11 @@ function openForm2() {
     document.getElementById("form2").style.display = "block";
 
     const profitRate = document.getElementById("profitRate").value;
-    const feeRate    = document.getElementById("kratiseis").value; // FIX: kratiseis
+    const feeRate    = document.getElementById("fee").value; // FIX: fee
     const rateUSDT   = document.getElementById("rateUSDT").value;
 
     document.getElementById("profitRate_display").innerText = profitRate;
-    document.getElementById("feeRate_display").innerText    = feeRate + "%";  // NEW: εμφανίζει και το %
+    document.getElementById("feeRate_display").innerText    = feeRate + "%";  
     document.getElementById("rateUSDT_display").innerText   = rateUSDT;
 }
 
@@ -227,7 +227,7 @@ function calcRange(startDate, endDate, startAmount, rate, plays) {
 function run10() {
     const rate     = (parseFloat(document.getElementById("profitRate").value) || 0) / 100;
     const usdtRate = parseFloat(document.getElementById("rateUSDT").value) || 1;
-    const feerate  = (parseFloat(document.getElementById("kratiseis").value) || 0) / 100; // FIX: kratiseis
+    const feerate  = (parseFloat(document.getElementById("fee").value) || 0) / 100; // FIX: fee
 
     for (let i = 1; i <= 10; i++) {
         let a     = document.getElementById("a" + i).value;
@@ -401,11 +401,11 @@ function openForm2() {
     document.getElementById("form2").style.display = "block";
 
     const profitRate = document.getElementById("profitRate").value;
-    const feeRate    = document.getElementById("kratiseis").value; // FIX: kratiseis
+    const feeRate    = document.getElementById("fee").value; // FIX: fee
     const rateUSDT   = document.getElementById("rateUSDT").value;
 
     document.getElementById("profitRate_display").innerText = profitRate;
-    document.getElementById("feeRate_display").innerText    = feeRate + "%";  // NEW: εμφανίζει και το %
+    document.getElementById("feeRate_display").innerText    = feeRate + "%";
     document.getElementById("rateUSDT_display").innerText   = rateUSDT;
 }
 
@@ -438,7 +438,7 @@ function calcRange(startDate, endDate, startAmount, rate, plays) {
 function run10() {
     const rate     = (parseFloat(document.getElementById("profitRate").value) || 0) / 100;
     const usdtRate = parseFloat(document.getElementById("rateUSDT").value) || 1;
-    const feerate  = (parseFloat(document.getElementById("kratiseis").value) || 0) / 100; // FIX: kratiseis
+    const feerate  = (parseFloat(document.getElementById("fee").value) || 0) / 100; // FIX: fee
 
     for (let i = 1; i <= 10; i++) {
         let a     = document.getElementById("a" + i).value;
