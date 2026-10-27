@@ -264,7 +264,7 @@ function run10() {
         document.getElementById("net" + i).innerText = net.toFixed(2);
 
         // R = amount - final withdraw
-        let r = result.amount - wf;
+        let r = result.amount - w;
         document.getElementById("r" + i).innerText = r.toFixed(2);
 
         if (i < 10) {
