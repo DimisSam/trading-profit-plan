@@ -25,7 +25,6 @@ function startApp() {
         document.getElementById("inDeposit").addEventListener("input", debounce(updateStartAmount, 250));
         document.getElementById("bonus").addEventListener("input", debounce(updateStartAmount, 250));
         document.getElementById("exDeposit").addEventListener("input", debounce(updateStartAmount, 250));
-
         document.getElementById("wAmount").addEventListener("input", debounce(updateWithdrawal, 250));
         document.getElementById("kratiseis").addEventListener("input", debounce(updateWithdrawal, 250));
         document.getElementById("rateUSDC").addEventListener("input", debounce(updateWithdrawal, 250));
@@ -146,7 +145,7 @@ const απαραίτητοΥπόλοιπο = targetLimit - ποσόΜετάΑν�
 const τελικόΚέρδος = τρέχονΠοσό - (αρχική + επιπλέον + μπόνους);
 const κρατήσεις = τελικόΚέρδος * 0.05;
 const καθαρόΚέρδος = τελικόΚέρδος - κρατήσεις;
-const καθαρόΜετά = ποσόΜετάΑνάληψη - κρατήσεις;
+const καθαρόΜετά = ποσόΜετάΑνάληψη;
 
 html += `
     </table><br>
@@ -155,12 +154,10 @@ html += `
     <strong>Ποσό Ανάληψης: $${ποσόΑνάληψης.toFixed(2)}</strong><br>
     <strong>Ποσό μετά την ανάληψη: $${ποσόΜετάΑνάληψη.toFixed(2)}</strong><br>
     <strong>Υπόλοιπο για να ξαναπιαστεί ο στόχος: $${απαραίτητοΥπόλοιπο.toFixed(2)}</strong><br><br>
-
     <strong>Κέρδος πριν τις κρατήσεις: $${τελικόΚέρδος.toFixed(2)}</strong><br>
     <strong>Κρατήσεις (5%): $${κρατήσεις.toFixed(2)}</strong><br>
     <strong>Καθαρό Κέρδος: $${καθαρόΚέρδος.toFixed(2)}</strong><br>
     <strong>Καθαρό ποσό μετά τις κρατήσεις: $${καθαρόΜετά.toFixed(2)}</strong><br><br>
-
     <strong>Ημέρες που χρειάστηκαν για διπλασιασμό του αρχικού ποσού: ${ημέρες}</strong><br><br>
 
     <button onclick="exportToCSV()">Εξαγωγή σε CSV</button>
